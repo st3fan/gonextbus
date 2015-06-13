@@ -2,15 +2,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-package main
+package nextbus
 
 import (
-	"encoding/json"
 	"launchpad.net/xmlpath"
-	"log"
 	"net/http"
-	"os"
-	"strconv"
 )
 
 const NextBusPublicXMLFeed = "http://webservices.nextbus.com/service/publicXMLFeed"
@@ -107,7 +103,7 @@ type RouteConfig struct {
 	Directions    []RouteConfigDirection
 }
 
-func ParseRouteConfigDirection(node *xmlpath.Node, stopsByTag map[string]RouteConfigStop) (RouteConfigDirection, error) {
+func parseRouteConfigDirection(node *xmlpath.Node, stopsByTag map[string]RouteConfigStop) (RouteConfigDirection, error) {
 	tag, _ := directionTagPath.String(node)
 	title, _ := directionTitlePath.String(node)
 	name, _ := directionNamePath.String(node)
