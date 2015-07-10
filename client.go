@@ -5,11 +5,12 @@
 package nextbus
 
 import (
-	"launchpad.net/xmlpath"
 	"net/http"
+
+	"launchpad.net/xmlpath"
 )
 
-const NextBusPublicXMLFeed = "http://webservices.nextbus.com/service/publicXMLFeed"
+const nextBusPublicXMLFeed = "http://webservices.nextbus.com/service/publicXMLFeed"
 
 type RouteListRoute struct {
 	Tag   string
@@ -38,7 +39,7 @@ var (
 	stopTitlePath         = xmlpath.MustCompile("@title")
 	stopLatPath           = xmlpath.MustCompile("@lat")
 	stopLonPath           = xmlpath.MustCompile("@lon")
-	stopStopIdPath        = xmlpath.MustCompile("@stopId")
+	stopStopIDPath        = xmlpath.MustCompile("@stopId")
 	routeStopPath         = xmlpath.MustCompile("/body/route/stop")
 	routeDirectionPath    = xmlpath.MustCompile("/body/route/direction")
 )
@@ -50,7 +51,7 @@ var (
 //
 
 func FetchRouteList(agency string) (RouteList, error) {
-	resp, err := http.Get(NextBusPublicXMLFeed + "?command=routeList&a=" + agency)
+	resp, err := http.Get(nextBusPublicXMLFeed + "?command=routeList&a=" + agency)
 	if err != nil {
 		return RouteList{}, err
 	}
@@ -79,7 +80,7 @@ type RouteConfigStop struct {
 	Title  string
 	Lat    float64
 	Lon    float64
-	StopId string
+	StopID string
 }
 
 type RouteConfigDirection struct {
@@ -133,7 +134,7 @@ func parseRouteConfigDirection(node *xmlpath.Node, stopsByTag map[string]RouteCo
 }
 
 func FetchRouteConfig(agency, route string) (RouteConfig, error) {
-	resp, err := http.Get(NextBusPublicXMLFeed + "?command=routeConfig&a=" + agency + "&r=" + route)
+	resp, err := http.Get(nextBusPublicXMLFeed + "?command=routeConfig&a=" + agency + "&r=" + route)
 	if err != nil {
 		return RouteConfig{}, err
 	}
@@ -155,7 +156,7 @@ func FetchRouteConfig(agency, route string) (RouteConfig, error) {
 
 	// Parse the stops
 
-	var stopsByTag map[string]RouteConfigStop = map[string]RouteConfigStop{}
+	var stopsByTag = map[string]RouteConfigStop{}
 
 	iter := routeStopPath.Iter(root)
 	for iter.Next() {
@@ -163,14 +164,14 @@ func FetchRouteConfig(agency, route string) (RouteConfig, error) {
 		title, _ := stopTitlePath.String(iter.Node())
 		lat, _ := stopLatPath.String(iter.Node())
 		lon, _ := stopLonPath.String(iter.Node())
-		stopId, _ := stopStopIdPath.String(iter.Node())
+		stopID, _ := stopStopIDPath.String(iter.Node())
 
 		stopsByTag[tag] = RouteConfigStop{
 			Tag:    tag,
 			Title:  title,
 			Lat:    parseFloat(lat),
 			Lon:    parseFloat(lon),
-			StopId: stopId,
+			StopID: stopID,
 		}
 	}
 
