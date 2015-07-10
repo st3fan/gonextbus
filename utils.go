@@ -12,16 +12,14 @@ func parseFloat(s string) float64 {
 	v, err := strconv.ParseFloat(s, 64)
 	if err == nil {
 		return v
-	} else {
-		return 0
 	}
+	return 0
 }
 
 func parseBool(s string) bool {
 	v, err := strconv.ParseBool(s)
 	if err == nil {
 		return v
-	} else {
-		return false
 	}
+	return false
 }
